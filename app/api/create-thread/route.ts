@@ -36,7 +36,7 @@ export async function POST(request: NextApiRequest) {
       );
     }
 
-    return new NextResponse(JSON.stringify(assistant.id), {
+    return new NextResponse(JSON.stringify({ id: assistant.id }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
