@@ -7,6 +7,7 @@ export default function NewChatButton() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const handleClick = useCallback(async () => {
+    console.log(process.env.NEXT_PUBLIC_API_BASE_URL);
     try {
       const resonse = await fetch("/api/create-thread", {
         method: "POST",
@@ -21,15 +22,16 @@ export default function NewChatButton() {
             "There was an error while atttempting to create a chat",
         );
       }
-      const response = await resonse.json();
-      router.push(`/chat/${response.id}`);
+      const jsonResponse = await resonse.json();
+      console.log("Chat created:", jsonResponse.data.thread_id);
+      router.push(`/chat/${jsonResponse.data.thread_id}`);
     } catch {
       console.error("Error starting chat:", error);
       setError("There was a problem starting the chat. Please try again.");
     }
   }, [router, error]);
   return (
-    <div>
+    <div className="w-full">
       <button
         className="w-1/2 min-h-10 text-blue-900 border-2 border-gray-100 rounded-md text-center flex items-center bg-gray-100"
         onClick={handleClick}

@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
-import { client } from "@/libs/aiInitializer";
 import { NextApiRequest } from "next";
+import { Assistant } from "@/const/interfaces/interfaces";
+import axiosInstance  from "@/libs/api/axiosInstance";
+import axios from "axios";
 
-export async function POST(request: NextApiRequest) {
+export async function POST(request: NextApiRequest): Promise<NextResponse> {
   try {
     const { userId } = getAuth(request);
     if (!userId) {
@@ -14,15 +16,8 @@ export async function POST(request: NextApiRequest) {
         },
       });
     }
-    const assistant = await client.beta.threads.create({
-      messages: [
-        {
-          role: "assistant",
-          content: "What can I help you with?",
-        },
-      ],
-    });
-    console.log(assistant);
+    let response = await axiosInstance.post<Assistant>('/assistant/create-thread')
+    let assistant = response.data;
     if (!assistant) {
       console.log("An error occured while creating a thread");
       return new NextResponse(
@@ -36,7 +31,7 @@ export async function POST(request: NextApiRequest) {
       );
     }
 
-    return new NextResponse(JSON.stringify({ id: assistant.id }), {
+    return new NextResponse(JSON.stringify({ data: assistant }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -44,7 +39,11 @@ export async function POST(request: NextApiRequest) {
     });
   } catch (error) {
     console.error("Error creating assistant thread:", error);
-
+    if (axios.isAxiosError(error)) {
+            console.error('Axios error:', error.message);
+        } else {
+            console.error('Unknown error:', error);
+        }
     const errorMessage =
       typeof error === "object" && error !== null && "message" in error
         ? (error as { message: string }).message
