@@ -1,5 +1,6 @@
 import { Message } from "@/const/interfaces/interfaces";
 import axiosInstance from "@/libs/api/axiosInstance";
+import ChatForm from "@/components/chat/ChatForm";
 export const getThreadMessages = async (threadId: string): Promise<Message[]> => { 
   try {
     const response = await axiosInstance.get(`/assistant/messages/${threadId}`);
@@ -18,7 +19,7 @@ export default async function IndvidualThreadPage({
   const { id } = params;
   const messages = await getThreadMessages(id);
   return <section className="flex flex-col ">
-    <div className="w-full h-[80vh]">
+    <div className="w-full h-[75vh]">
       {messages.length > 0 && messages.map((message) => (
         <div
           key={message.id}
@@ -31,7 +32,7 @@ export default async function IndvidualThreadPage({
     </div>
     <div className="w-full h-[20vh]">
       <div className="flex justify-center items-center">
-        input here
+        <ChatForm />
       </div>
     </div>
   </section>;
