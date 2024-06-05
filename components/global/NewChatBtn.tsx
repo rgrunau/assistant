@@ -22,9 +22,9 @@ export default function NewChatButton() {
             "There was an error while atttempting to create a chat",
         );
       }
-      const jsonResponse = await resonse.json();
-      console.log("Chat created:", jsonResponse.data.thread_id);
-      router.push(`/chat/${jsonResponse.data.thread_id}`);
+      const assistantThread = await resonse.json();
+      console.log("Chat created:", assistantThread.data.thread_id);
+      router.push(`/chat/${assistantThread.data.thread_id}`);
     } catch {
       console.error("Error starting chat:", error);
       setError("There was a problem starting the chat. Please try again.");
