@@ -1,5 +1,6 @@
+import { Message } from "@/const/interfaces/interfaces";
 import axiosInstance from "@/libs/api/axiosInstance";
-export const getThreadMessages = async (threadId: string) => { 
+export const getThreadMessages = async (threadId: string): Promise<Message[]> => { 
   try {
     const response = await axiosInstance.get(`/assistant/messages/${threadId}`);
     return response.data;
@@ -16,12 +17,13 @@ export default async function IndvidualThreadPage({
 }) {
   const { id } = params;
   const messages = await getThreadMessages(id);
-  console.log(messages);
-  console.log(messages[0].content?.text?.value)
   return <section className="flex flex-col ">
     <div className="w-full h-[80vh]">
       {messages.length > 0 && messages.map((message) => (
-        <div key={message.id}>
+        <div
+          key={message.id}
+          className="flex flex-col items-start justify-start my-2 p-2 border border-gray-200 rounded-md full mx-auto"
+        >
           <div>{message.content[0].text.value}</div>
           <div>{message.created_at}</div>
         </div>
